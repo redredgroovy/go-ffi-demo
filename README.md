@@ -30,6 +30,5 @@ Hello from Go!
 ```
 go-ffi-demo$ ( cd node && npm install )
 go-ffi-demo$ node node/demo.js
-go-ffi-demo$ node node/demo.js
 Hello from Go!
 ```
