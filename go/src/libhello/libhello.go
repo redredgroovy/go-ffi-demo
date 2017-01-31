@@ -16,6 +16,11 @@ func HelloFromGo() *C.char {
     return str
 }
 
+//export PrintFromGo
+func PrintFromGo(str *C.char) {
+    hello.PrintFromGo(C.GoString(str))
+}
+
 //export FreeCString
 func FreeCString(str *C.char) {
     C.free(unsafe.Pointer(str))
