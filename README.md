@@ -21,7 +21,7 @@
 4. Run the python demo program:
 
     ```
-    go-ffi-demo$ python ./python/demo.py
+    go-ffi-demo$ python python/demo.py
     Hello from Go!
     ```
 
