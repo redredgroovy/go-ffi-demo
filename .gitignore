@@ -1,0 +1,9 @@
+*.pyc
+.*.s??
+
+libhello.so
+libhello.h
+
+c/demo
+node/node_modules
+go/pkg
