@@ -2,10 +2,23 @@ package hello
 
 import "fmt"
 
-func HelloFromGo() string {
-    return "HelloFromGo(): Hello from Go!"
+func StringFromGo() string {
+    return "Hello from Go!"
 }
 
-func PrintFromGo(str string) {
-    fmt.Printf("PrintFromGo(): %s\n", str)
+func StringToGo(str string) {
+    fmt.Printf("StringToGo(): %s\n", str)
+}
+
+func ArrayFromGo() []int32 {
+    array := []int32{1, 2, 3}
+    return array
+}
+
+func ArrayToGo(array []int32) {
+    fmt.Printf("ArrayToGo():")
+    for i := range array {
+        fmt.Printf(" %d", array[i])
+    }
+    fmt.Printf("\n")
 }

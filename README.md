@@ -15,16 +15,20 @@
     ```
     go-ffi-demo$ gcc -Wall -o c/demo c/demo.c ./libhello.so
     go-ffi-demo$ c/demo
-    HelloFromGo(): Hello from Go!
-    PrintFromGo(): Calling from C
+    StringFromGo(): Hello from Go!
+    StringToGo(): Calling from C
+    ArrayFromGo(): 1 2 3
+    ArrayToGo(): 4 5 6
     ```
 
 4. Run the python demo program:
 
     ```
     go-ffi-demo$ python python/demo.py
-    HelloFromGo(): Hello from Go!
-    PrintFromGo(): Calling from Python
+    StringFromGo(): Hello from Go!
+    StringToGo(): Calling from Python
+    ArrayFromGo(): 1 2 3
+    ArrayToGo(): 4 5 6
     ```
 
 5. Install and run the Node demo program:
@@ -32,6 +36,8 @@
     ```
     go-ffi-demo$ ( cd node && npm install )
     go-ffi-demo$ node node/demo.js
-    HelloFromGo(): Hello from Go!
-    PrintFromGo(): Calling from Node
+    StringFromGo(): Hello from Go!
+    StringToGo(): Calling from Node
+    ArrayFromGo(): 1 2 3
+    ArrayToGo(): 4 5 6
     ```
