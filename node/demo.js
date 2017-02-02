@@ -28,63 +28,76 @@ var lib = ffi.Library('./libhello.so', {
 // STRINGS
 //
 
-// Call library function
-var go_string = lib.StringFromGo();
-// Attach garbage collector to returned string
-finalize(go_string, function () { lib.FreeString(this); });
-// Display the string received from Go
-console.log("StringFromGo(): " + go_string.readCString());
+// Call Go library function which returns a string
+{
+    var go_string = lib.StringFromGo();
+    // Attach garbage collector to returned string
+    finalize(go_string, function () { lib.FreeString(this); });
+    // Display the string received from Go
+    console.log("StringFromGo(): " + go_string.readCString());
+}
 
-// Pass string to library function
-lib.StringToGo(ref.allocCString("Calling from Node"));
+// Pass string to Go library function
+{
+    lib.StringToGo(ref.allocCString("Calling from Node"));
+}
 
 //
 // ARRAYS
 //
 
-// Call Go library function and receive a Demo_Array struct
-// Use the struct to dereference and set length of returned array
-var go_array = lib.ArrayFromGo().deref();
-go_array.data.length = go_array.len;
+// Call Go library function which returns a Demo_Array struct
+{
+    // Use the struct to dereference and set length of returned array
+    var go_array = lib.ArrayFromGo().deref();
+    go_array.data.length = go_array.len;
 
-// Display the array received from Go
-process.stdout.write("ArrayFromGo():");
-for (var i = 0; i < go_array.len; i++) {
-    process.stdout.write(" " + go_array.data[i]);
+    // Display the array received from Go
+    process.stdout.write("ArrayFromGo():");
+    for (var i = 0; i < go_array.len; i++) {
+        process.stdout.write(" " + go_array.data[i]);
+    }
+    process.stdout.write("\n");
+
+    // Free array, or attach garbage collector as in String above
+    lib.FreeArray(go_array.ref());
 }
-process.stdout.write("\n");
 
-// Free array, or attach garbage collector as in String above
-lib.FreeArray(go_array.ref());
-
-// Create a Demo_Array wrapper for the native Node array
-var node_array = [4,5,6];
-var go_array = new Demo_Array();
-go_array.data = node_array;
-go_array.len = node_array.length;
 // Pass array to Go library function
-lib.ArrayToGo(go_array.ref());
+{
+    // Create a Demo_Array wrapper for the native Node array
+    var node_array = [4,5,6];
+    var go_array = new Demo_Array();
+    go_array.data = node_array;
+    go_array.len = node_array.length;
+    // Pass array to Go library function
+    lib.ArrayToGo(go_array.ref());
+}
 
 //
 // FUNCTIONS
 //
 
 // Create a callpack pointer that can be passed to Go
-var CallbackInNode = ffi.Callback('void', ['string'],
+var CallbackInNode = ffi.Callback('void', ['char*'],
     function(str) {
-        console.log("CallbackInNode(): " + str)
+        console.log("CallbackInNode(): " + str.readCString());
+        lib.FreeString(str);
     }
 );
 // Make an extra reference to the callback to avoid GC
 process.on('exit', function() { CallbackInNode });
 
+// Receive a Go callback function and call it from here
+{
+    var go_ptr = lib.FunctionFromGo();
+    // Convert the Go function pointer to a Node function
+    var go_func = ffi.ForeignFunction(go_ptr, 'void', ['string'])
+    // Call the Go function from here
+    go_func("Calling from Node");
+}
+
 // Pass the Node function pointer to Go and call it from there
-lib.FunctionToGo(CallbackInNode);
-
-
-// Retreive a Go function pointer
-var go_ptr = lib.FunctionFromGo();
-// Convert the Go function pointer to a Node function
-var go_func = ffi.ForeignFunction(go_ptr, 'void', ['string'])
-// Call the Go function from here
-go_func("Calling from Node");
+{
+    lib.FunctionToGo(CallbackInNode);
+}
