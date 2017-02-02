@@ -1,3 +1,17 @@
+# go-ffi-demo
+
+Examples for building a shared library with the Go 1.5 `c-shared` buildmode, and then interfacing with this library in C, Python, and Node.
+
+There is a proof-of-concept in each language for:
+* Passing string arguments to Go functions
+* Calling Go functions which return strings
+* Passing array/list arguments to Go functions
+* Calling Go functions which return a Go slice
+* Passing function pointers and having them called by Go
+* Receiving and calling Go function pointers
+
+# Instructions
+
 1. Build the Go 'hello' package
 
     ```
