@@ -22,3 +22,7 @@ func ArrayToGo(array []int32) {
     }
     fmt.Printf("\n")
 }
+
+func CallbackInGo(str string) {
+    fmt.Printf("CallbackInGo(): %s\n", str)
+}

@@ -1,6 +1,11 @@
 #include "../libhello.h"
 #include <stdio.h>
 
+// Callback function to be called from Go
+void CallbackInC(char *go_str) {
+    printf("CallbackInC(): %s\n", go_str);
+}
+
 int main(int argc, char const *argv[])
 {
     /*
@@ -10,7 +15,7 @@ int main(int argc, char const *argv[])
     // Call library function and release returned string
     char *string_in = StringFromGo();
     printf("StringFromGo(): %s\n", string_in);
-    FreeCString(string_in); // Release the Go string
+    FreeString(string_in); // Release the Go string
 
     // Pass string to a library function
     StringToGo("Calling from C");
@@ -34,6 +39,13 @@ int main(int argc, char const *argv[])
     // Create a Demo_Array wrapper for the native C array
     Demo_Array array_out = { c_array, sizeof(c_array)/sizeof(c_array[0]) };
     ArrayToGo(&array_out);
-    
+
+    /*
+      FUNCTIONS
+    */
+    FunctionToGo(&CallbackInC);
+    void (*go_ptr)() = FunctionFromGo();
+    (go_ptr)("Calling from C");
+        
     return 0;
 }

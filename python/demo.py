@@ -12,36 +12,56 @@ lib = ffi.dlopen("./libhello.so")
 ffi.cdef('''
     char* StringFromGo();
     void StringToGo(char*);
-    void FreeCString(void*);
+    void FreeString(void*);
 
     typedef struct { void *data; int len; } Demo_Array;
     Demo_Array* ArrayFromGo();
     void ArrayToGo(Demo_Array*);
     void FreeArray(Demo_Array*);
+
+    typedef void (*Demo_Func_Ptr)(char*);
+    Demo_Func_Ptr FunctionFromGo();
+    void FunctionToGo(Demo_Func_Ptr);
 ''')
 
 ##
 ## STRINGS
 ##
 
-# Call library function and attach a garbage collector to returned string
-string_in = ffi.gc(lib.StringFromGo(), lib.FreeCString)
-print("StringFromGo(): {}".format(ffi.string(string_in).decode("utf-8")))
+# Call Go library function and attach a garbage collector to returned string
+go_string = ffi.gc(lib.StringFromGo(), lib.FreeString)
+print("StringFromGo(): {}".format(ffi.string(go_string).decode("utf-8")))
 
-# Pass string to library function
+# Pass string to Go library function
 lib.StringToGo("Calling from Python")
 
 ##
 ## LISTS
 ##
 
-# Call library function and attach a garbage collector to returned array
-array_in = ffi.gc(lib.ArrayFromGo(), lib.FreeArray)
-py_array = ffi.unpack(ffi.cast("int*", array_in.data), array_in.len)
+# Call Go library function and attach a garbage collector to returned array
+go_array = ffi.gc(lib.ArrayFromGo(), lib.FreeArray)
+py_array = ffi.unpack(ffi.cast("int*", go_array.data), go_array.len)
 print("ArrayFromGo(): {}".format(' '.join([str(x) for x in py_array])))
 
-# Pass array to library function
+# Pass array to Go library function
 # Don't call ffi.new() inside another function or it will be garbage collected
 py_array = ffi.new("int[]", [4,5,6])
-array_out = ffi.new("Demo_Array*", {'data': py_array, 'len': len(py_array)})
-lib.ArrayToGo(array_out)
+go_array = ffi.new("Demo_Array*", {'data': py_array, 'len': len(py_array)})
+lib.ArrayToGo(go_array)
+
+##
+## FUNCTIONS
+##
+
+@ffi.callback("void(char*)")
+def CallbackInPython(str):
+    print("CallbackInPython(): {}".format(ffi.string(str).decode("utf-8")) )
+    lib.FreeString(str)
+
+# Pass a Python function pointer to Go and call it from there
+lib.FunctionToGo(CallbackInPython)
+
+# Retrieve a Go function pointer and call it from here
+go_ptr = lib.FunctionFromGo()
+go_ptr("Calling from Python")

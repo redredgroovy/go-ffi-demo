@@ -19,6 +19,8 @@
     StringToGo(): Calling from C
     ArrayFromGo(): 1 2 3
     ArrayToGo(): 4 5 6
+    CallbackInC(): Calling from Go
+    CallbackInGo(): Calling from C
     ```
 
 4. Run the python demo program:
@@ -29,6 +31,8 @@
     StringToGo(): Calling from Python
     ArrayFromGo(): 1 2 3
     ArrayToGo(): 4 5 6
+    CallbackInPython(): Calling from Go
+    CallbackInGo(): Calling from Python
     ```
 
 5. Install and run the Node demo program:
@@ -40,4 +44,6 @@
     StringToGo(): Calling from Node
     ArrayFromGo(): 1 2 3
     ArrayToGo(): 4 5 6
+    CallbackInNode(): Calling from Go
+    CallbackInGo(): Calling from Node
     ```
